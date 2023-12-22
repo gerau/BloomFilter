@@ -11,7 +11,7 @@
 
         public BloomFilter(int s)
         {
-            bitArray = new ulong[N >> 6];
+            bitArray = new ulong[(N >> 6) + 1];
             var rand = new Random();
             randomInts = new List<ushort>();
 
@@ -29,24 +29,21 @@
 
         public bool GetElement(ushort pos)
         {
-            int count = pos >> 6;
+            int count = pos/64;
             int shift = pos % 64;
 
+            
             ulong result = bitArray[count] >> shift;
 
             return (result & 1) == 1;
         }
         public void SetElement(ushort pos)
         {
-            int count = pos >> 6;
+            int count = pos/64;
             int shift = pos % 64;
 
             bitArray[count] |= (ulong)1 << shift;
         }
-
-
-
-
         public void Add(string s)
         {
             foreach(var k in randomInts)
@@ -55,7 +52,6 @@
                 SetElement(pos);
             }
         }
-
         public bool Check(string s)
         {
             foreach(var k in randomInts)
@@ -67,6 +63,11 @@
                 }
             }
             return true;
+        }
+
+        public void Clear()
+        {
+            bitArray = new ulong[(N >> 6) + 1];
         }
     }
 }
